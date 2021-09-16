@@ -8,11 +8,12 @@ date = 'Date: '
 listvalues = []
 labels = []
 colors = []
+colorint = {}
 with open('/var/log/suricata/stats.log') as logfile:
     lines = logfile.readlines()
     keys = [ ]
     dictvalues = {}
-    for line in lines[::256]:
+    for line in lines[::128]:
         if date in line:
             labels.append(line.split(' (up')[0].replace('Date: ', '').replace('-', '').replace(' ', '_'))
         if first in line:
@@ -20,19 +21,15 @@ with open('/var/log/suricata/stats.log') as logfile:
             key  = line.split(':')[0]
             value = int(line.split(':')[1])
             if key not in keys:
-                color = random.randint(0,255)
-                color1 = random.randint(0,255)
-                color2 = random.randint(0,255)
-                string = "rgba("+str(color)+","+str(color1)+","+str(color2)+",1)"
+                for x in range(3):
+                    colorint[x] = random.randint(0,255)
+                string = "rgba("+str(colorint[0])+","+str(colorint[1])+","+str(colorint[2])+",1)"
                 keys.append(key)
                 colors.append(string)
             try:
                 dictvalues[key].append(value)
             except:
                 dictvalues[key] = []
-        listvalues.append(dictvalues)
-
-
 
 @app.route('/')
 def hello_world():
