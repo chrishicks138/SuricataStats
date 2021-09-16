@@ -1,0 +1,37 @@
+<!doctype html>
+<style>
+  .container {
+    display: grid;
+  }
+  .grid {
+    position: relative;
+    margin: auto;
+
+  }
+
+  #myChart {
+    margin: auto;
+    position: relative;
+  }
+</style>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suricata stats</title>
+  <script src="static/Chart.min.js"></script>
+</head>
+<html>
+  <body>
+    <h2>Suricata stats</h2>
+    <div class="container">
+    {% for i in counted %}
+        <div class="grid">
+          {% include 'chart.html'%}<br>
+        </div>
+    {% endfor %}
+    </div>
+  </body>
+</html>
+
+
+
