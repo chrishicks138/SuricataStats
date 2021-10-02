@@ -8,14 +8,14 @@ date = 'Date: '
 
 labels = []
 
-def logParse():
+def paint():
     colors = []
     colorint = {}
     keys = []
     dictvalues = {}
     with open('/var/log/suricata/stats.log') as logfile:
         lines = logfile.readlines()
-        for line in lines[::128]:
+        for line in lines[::4]:
             if date in line:
                 line = line.split(' (up')[0].replace('Date: ', '').replace('-', '').replace(' ', '_')
                 if line not in labels:
@@ -35,6 +35,12 @@ def logParse():
                 except:
                     dictvalues[key] = []
     return dictvalues, colors
+
+def logParse():
+    try:
+        return paint()
+    except:
+        raise
 
 @app.route('/')
 def hello_world():
