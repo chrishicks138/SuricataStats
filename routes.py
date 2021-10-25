@@ -1,5 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template
 import random
+import numpy as np
+
 
 app = Flask(__name__)
 
@@ -8,18 +10,37 @@ date = 'Date: '
 
 labels = []
 
-def paint():
+
+
+lines = []
+length = 8192
+count = 0
+data = []
+with open('/var/log/suricata/stats.log') as logfile:
+    for line in logfile:
+        count = count+1
+        if count >= length:
+            data.append(lines)
+            lines = []
+            count = 0
+        else:
+            lines.append(line )
+print("LENGTH OF STATS.LOG:", len(data))
+
+def labeler(line):
+    if date in line:
+        line = line.split(' (up')[0].replace('Date: ', '').replace('-', '').replace(' ', '_')
+        if line not in labels:
+            labels.append(line)
+
+def paint(step):
     colors = []
     colorint = {}
     keys = []
     dictvalues = {}
-    with open('/var/log/suricata/stats.log') as logfile:
-        lines = logfile.readlines()
-        for line in lines[::4]:
-            if date in line:
-                line = line.split(' (up')[0].replace('Date: ', '').replace('-', '').replace(' ', '_')
-                if line not in labels:
-                    labels.append(line)
+    for lines in data:
+        for line in lines[::step]:
+            labeler(line)
             if first in line:
                 line = line.replace(first, ':').replace('\n', '').replace(' ', '')
                 key  = line.split(':')[0]
@@ -36,15 +57,16 @@ def paint():
                     dictvalues[key] = []
     return dictvalues, colors
 
-def logParse():
+def logParse(step):
     try:
-        return paint()
+        return paint(step)
     except:
         raise
 
 @app.route('/')
 def hello_world():
-    dictvalues = logParse()
+    step = 1024
+    dictvalues = logParse(step)
     colors = dictvalues[1]
     dictvalues = dictvalues[0]
     values = list(dictvalues.values())
