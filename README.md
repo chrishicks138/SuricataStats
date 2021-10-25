@@ -8,10 +8,10 @@
 Needs Suricata and Python
 
 
-INSTALL
-cd SuricataStats
-pip3 install -r requirements.txt
+INSTALL<br>
+cd SuricataStats<br>
+pip3 install -r requirements.txt<br>
 
-RUN
-cd SuricataStats
-python3 routes.py
+RUN<br>
+cd SuricataStats<br>
+python3 routes.py<br>
